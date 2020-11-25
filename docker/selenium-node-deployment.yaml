@@ -20,7 +20,7 @@ spec:
           image: selenium/node-chrome:3.141.59-xenon
           env:
             - name: JAVA_OPTS
-              value: "-Xmx512m -Dselenium.LOGGER.level=WARNING"
+              value: "-Xmx512m -Dselenium.LOGGER.level=INFO"
             - name: SE_OPTS
               value: ""
             - name: HUB_PORT_4444_TCP_ADDR

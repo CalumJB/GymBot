@@ -9,4 +9,11 @@ kubectl create clusterrolebinding serviceaccounts-cluster-admin \
   --group=system:serviceaccounts
 
  #Kubernetes cluster server ip
+ #For config
  kubectl config view
+
+
+#Check is DNS is running on cluster
+kubectl get services kube-dns --namespace=kube-system
+#If its not running then use this to start it
+https://github.com/coredns/deployment/tree/master/kubernetes
