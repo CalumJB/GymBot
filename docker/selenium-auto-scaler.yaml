@@ -1,44 +1,61 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: selenium-hub-deployment
+  name: selenium-auto-scaler-deployment
   labels:
-    app: selenium-hub
-    name: selenium-hub
+    app: selenium-auto-scaler
+    name: selenium-auto-scaler
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: selenium-hub
+      app: selenium-auto-scaler
   template:
     metadata:
       labels:
-        app: selenium-hub
+        app: selenium-auto-scaler
     spec:
       containers:
-        - name: selenium-hub
-          image: selenium/hub:3.141.59-xenon
+        - name: selenium-auto-scaler
+          image: selenium-auto-scaler
+          imagePullPolicy: Never
           env:
-            - name: JAVA_OPTS
-              value: "-Xmx1024m"
-            - name: POOL_MAX
-              value: "500"
-            - name: GRID_NEW_SESSION_WAIT_TIMEOUT
-              value: "-1"
-            - name: GRID_JETTY_MAX_THREADS
-              value: "-1"
-            - name: GRID_NODE_POLLING
-              value: "5000"
-            - name: GRID_CLEAN_UP_CYCLE
-              value: "5000"
-            - name: GRID_TIMEOUT
-              value: "600"
-            - name: GRID_BROWSER_TIMEOUT
-              value: "600"
-            - name: GRID_MAX_SESSION
-              value: "5"
-            - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
-              value: "30000"
+            - name: SCHEDULER_UP_CRON
+              value: "* 57 6 * * ?"
+            - name: SCHEDULER_DOWN_CRON
+              value: "* 02 7 * * ?"
+            - name: USER_REQUEST_IP
+              value: "1"
+            - name: USER_REQUEST_PORT
+              value: "90"
+            - name: HUB_IP
+              value: "selenium-hub-service-clusterip.default.svc.cluster.local"
+            - name: HUB_PORT
+              value: "4444"
+            - name: DEFAULT_SCALE
+              value: "2"
+            - name: NAMESPACE
+              value: "default"
+            - name: DEPLOYMENT
+              value: "selenium-auto-scaler-deployment"
+            - name: MAX_SCALE
+              value: "4"
           ports:
-            - containerPort: 4444
+            - containerPort: 8080
               protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-auto-scaler-nodeport
+  labels:
+    name: selenium-auto-scaler
+    service: selenium-auto-scaler-nodeport
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+  selector:
+    app: selenium-auto-scaler
