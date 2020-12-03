@@ -22,12 +22,9 @@ public class MainRunner implements CommandLineRunner {
         log.info("down cron: " + configProperties.getDownCron());
         log.info("user request ip: " + configProperties.getUserRequestIp());
         log.info("user request port: " + configProperties.getUserRequestPort());
-        log.info("api ip: " + configProperties.getApiIp());
-        log.info("api port: " + configProperties.getApiPort());
         log.info("hub ip: " + configProperties.getHubIp());
         log.info("hub port: " + configProperties.getHubPort());
         log.info("default scale: " + configProperties.getDefaultScale());
-        log.info("token: " + configProperties.getToken());
 
     }
 }
