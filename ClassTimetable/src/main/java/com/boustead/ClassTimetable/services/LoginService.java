@@ -1,5 +1,6 @@
-package com.boustead.ClassTimetable;
+package com.boustead.ClassTimetable.services;
 
+import com.boustead.ClassTimetable.ConfigProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -7,8 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.beans.ConstructorProperties;
 
 @Component
 public class LoginService {

@@ -1,5 +1,6 @@
-package com.boustead.ClassTimetable;
+package com.boustead.ClassTimetable.services;
 
+import com.boustead.ClassTimetable.ConfigProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Platform;
@@ -8,7 +9,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,12 +35,12 @@ public class WebDriverService {
         options.setCapability(CapabilityType.PLATFORM_NAME, Platform.MAC);
         options.setCapability(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
 
-        //options.setHeadless(true);
+        options.setHeadless(true);
 
         //Create driver
         try{
             System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver");
-            WebDriver driver = new ChromeDriver();
+            WebDriver driver = new ChromeDriver(options);
             driver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
             //WebDriver driver = new RemoteWebDriver(getHubUrl(), options);
             log.info("WebDriver created");

@@ -1,17 +1,14 @@
 package com.boustead.ClassTimetable;
 
+import com.boustead.ClassTimetable.services.LoginService;
+import com.boustead.ClassTimetable.services.TimetableService;
+import com.boustead.ClassTimetable.services.WebDriverService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.net.URL;
 
 @Component
 public class Scheduler {
@@ -30,7 +27,8 @@ public class Scheduler {
 
     Logger log = LogManager.getLogger(Scheduled.class);
 
-    @Scheduled(initialDelay = 1000 * 30, fixedDelay=Long.MAX_VALUE)
+    //@Scheduled(initialDelay = 1000 * 30, fixedDelay=Long.MAX_VALUE)
+    @Scheduled(cron = "${scheduled.cron.class.scrape}")
     public void setClassTimetable(){
 
         log.info("Schedule started");
@@ -54,6 +52,7 @@ public class Scheduler {
 
         //Try logout
         //loginService.logout();
+        log.info("Driver quit");
         driver.quit();
 
     }

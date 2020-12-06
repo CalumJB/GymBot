@@ -1,6 +1,10 @@
-package com.boustead.ClassTimetable;
+package com.boustead.ClassTimetable.services;
 
 
+import com.boustead.ClassTimetable.ConfigProperties;
+import com.boustead.ClassTimetable.db.ClassItem;
+import com.boustead.ClassTimetable.db.LocationClasses;
+import com.boustead.ClassTimetable.db.LocationClassesRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -9,7 +13,6 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,19 +28,29 @@ public class TimetableService {
     @Autowired
     ConfigProperties configProperties;
 
+
+    @Autowired
+    LocationClassesRepository locationClassesRepository;
+
     //Loop through the list of locations and get the timetable for each
     //Uses the same driver session so not async
     public void getClassTimetables(WebDriver driver){
         for(Map.Entry<String, Integer> entry: configProperties.getLocation().entrySet()){
-            log.info("Getting timetable for: " +entry.getKey());
-            getTimetableForLocation(driver, entry.getValue());
+            log.info("Getting timetable for: " + entry.getKey());
+            getTimetableForLocation(driver, entry.getKey(), entry.getValue());
         }
     }
 
-    private void getTimetableForLocation(WebDriver driver, int locId){
+    private void getTimetableForLocation(WebDriver driver, String locName, int locId){
+
+        LocationClasses classLocationClasses = new LocationClasses(true, locName, locId);
+        LocationClasses gymBookingLocationClasses = new LocationClasses(false, locName, locId);
 
         //Go to webpage
         driver.get("https://gymbox.legendonlineservices.co.uk/enterprise/BookingsCentre/MemberTimetable?clubId=" + locId);
+
+        //Check that timetable exists and return if not
+        if(driver.findElements(By.id("MemberTimetable")).size()==0){ return; }
 
         //Get full timetable
         WebElement memberTimetable = driver.findElement(By.id("MemberTimetable"));
@@ -49,24 +62,34 @@ public class TimetableService {
             // check classname
             String classname = tr.getAttribute("class");
 
-            //if date
             if(classname.equals("dayHeader")){ //date
                 //Get date header
-                log.info(tr.getText());
                 dateString=tr.getText();
                 if(dateString.isEmpty()){ log.error("Unable to get date for table row");}
             }
-
             else if(!classname.equals("header")){ //class
-                //each class row contains 7 columns
+
+                //Create class item from tr elements and date
                 ClassItem classItem = getClassFromTableRow(dateString,tr);
 
-            }
+                //Skip to next row if class item not created
+                if (classItem==null){ continue; }
 
+                //Add to correct item
+                if(classItem.isClass()){
+                    //add to class array
+                    classLocationClasses.addItem(classItem);
+                }else{
+                    //add to booking array
+                    gymBookingLocationClasses.addItem(classItem);
+                }
+
+            }
         }
 
-
-        //Start up the hub, node and a proxy
+        locationClassesRepository.deleteAllByLocationId(locId);
+        locationClassesRepository.save(classLocationClasses);
+        locationClassesRepository.save(gymBookingLocationClasses);
     }
 
     //Attemps to convert table row (tr) into a class object
@@ -99,9 +122,14 @@ public class TimetableService {
         //Convert date and time string to a Date object
         Date dateTime = stringDateTimeToDate(dateString, timeStr);
         if(dateTime==null){ return null; }
-        return new ClassItem(dateTime, nameStr, instructorStr, bookingIdStr);
 
+        //determine whether class of gym booking
+        boolean isClass;
 
+        if(nameStr.equals("Gym Time") || nameStr.equals("Gym Entry Time") || nameStr.equals("Last Entry Time")){ isClass=false; }
+        else{ isClass=true; }
+
+        return new ClassItem(isClass, dateTime, nameStr, instructorStr, bookingIdStr);
 
     }
 

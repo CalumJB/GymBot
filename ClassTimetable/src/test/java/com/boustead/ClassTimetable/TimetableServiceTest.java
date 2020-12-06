@@ -1,5 +1,6 @@
 package com.boustead.ClassTimetable;
 
+import com.boustead.ClassTimetable.services.TimetableService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,7 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TimetableServiceTest {
 
-    @Autowired TimetableService timetableService;
+    @Autowired
+    TimetableService timetableService;
 
     @Test
     public void testDateTimeConversion(){
