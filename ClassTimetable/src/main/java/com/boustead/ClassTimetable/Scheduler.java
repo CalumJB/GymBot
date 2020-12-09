@@ -27,8 +27,8 @@ public class Scheduler {
 
     Logger log = LogManager.getLogger(Scheduled.class);
 
-    //@Scheduled(initialDelay = 1000 * 30, fixedDelay=Long.MAX_VALUE)
-    @Scheduled(cron = "${scheduled.cron.class.scrape}")
+    @Scheduled(initialDelay = 1000 * 30, fixedDelay=Long.MAX_VALUE)
+    //@Scheduled(cron = "${scheduled.cron.class.scrape}")
     public void setClassTimetable(){
 
         log.info("Schedule started");

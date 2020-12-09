@@ -5,9 +5,12 @@ import com.boustead.ClassTimetable.db.LocationClassesRepository;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.core.pattern.MethodLocationPatternConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class GymClassesRest {
@@ -15,8 +18,10 @@ public class GymClassesRest {
     @Autowired
     LocationClassesRepository locationClassesRepository;
 
-    @GetMapping("/timetable")
-    public String getTimeTable(@RequestParam(defaultValue = "default") String locationId, @RequestParam(defaultValue = "default") String isClasses){
+    @GetMapping(path = "/timetable", produces= MediaType.APPLICATION_JSON_VALUE)
+    public String getTimeTable(HttpServletResponse response, @RequestParam(defaultValue = "default") String locationId, @RequestParam(defaultValue = "default") String isClasses){
+
+        response.addHeader("Access-Control-Allow-Origin", "*");
 
         //Check values provided
         if(locationId.equals("default") || isClasses.equals("default")){ return "{\"Message\":\"Parameters missing\"}";  }

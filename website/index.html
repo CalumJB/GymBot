@@ -2,33 +2,145 @@
 
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>GymBot</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>GymBot</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-<style>
-    th{ 
-        color:#fff;
-            }
+	<style>
+	body {
+		background-color: #222222;
+	}
+
+	tr{
+		color:#7F7F7F;
+		background-color: #222222;
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		font-weight: normal;
+		width:100%;
+	}
+	h1{
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		color: #FFFFFF;
+	}
+	p{
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		color: #FFFFFF;
+	}
+	.btn{
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		color:#7F7F7F;
+		background-color: #222222;
+    	outline:none;
+
+	}
+	#tablecred{
+		background-color: #000000;
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		font-weight: normal;
+		position: sticky; top: 0px;
+		
+	}
+	#errorHeader{
+		height:48px;
+		color: #FFFFFF;
+		background-color: #393939;
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		font-weight: lighter;
+		position: sticky; top: 0px;
+
+	}
+	#tableheaders{
+		color:#d6d834;
+		background-color: #393939;
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		font-weight: normal;
+		position: sticky; top: 48px;
+	}
+	#tabledate{
+		color: #29AD5F;
+		background-color: #393939;
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		font-weight: normal;
+		position: sticky; top: 96px;
+	}
+
+	.borderless td, .borderless th {
+    border: none;
+	}
+	.locbtn{
+		margin:5px;
+	}
+	.btnpointer, .btnpointer:hover{
+		height:30px;
+		padding-top:0px;
+		padding-bottom:0px;
+		padding-left:10px;
+		padding-left:10px;
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		color:#7F7F7F;
+		background-color: #222222;
+    	outline:none;
+	}
+
+	.form-control{
+		width: 75%;
+		margin: 5px;
+		font-family: 'Helvetica', 'Arial', sans-serif;
+		color:#7F7F7F;
+		background-color: #222222;
+		border-color:#7F7F7F;
+	}
+	tr:hover td {
+		background:#000
+	}
+	
+	.form-control:focus {
+  color:#7F7F7F;
+		background-color: #222222;
+		border-color:#7F7F7F;
+}
+
+
 </style>
 </head>
 <body>
 
-<table class="table table-striped">
-    <tr  class="bg-info">
-    	<th>Date</th>
-        <th>Time</th>
-        <th>Class</th>
-        <th>Instructor</th>
-        <th>Duration</th>
-    </tr>
+	<h1>GYMBOT</h1>
+	<p>HOW TO: </p>
+	<p>Please check your GymBox credentials at gymbox.com before submitting. If they are incorrect, we'll still try to process your request but it will fail.</p>
 
-    <tbody id="myTable">
-        
-    </tbody>
-</table>	
-  <script src="js/index.js"></script>
+
+	<!--location -->
+	<div id="isClassList">
+	</div>
+
+	<!--location -->
+	<div id="locationlist">
+	</div>
+
+	<form>
+  <div class="form-group">
+    <input onclick="resetError()" type="email" class="form-control" id="emailField" aria-describedby="emailHelp" placeholder="Enter email">
+  </div>
+  <div class="form-group">
+    <input onclick="resetError()" type="password" class="form-control" id="passwordField" placeholder="Password">
+  </div>
+</form>
+
+
+ 	<!--classes table-->
+	<table class="table borderless tableFixHead">
+		<colgroup>
+    <col style="width:20%">
+    <col style="width:60%">
+    <col style="width:20%">
+  </colgroup> 
+		<tbody id="myTable">
+		</tbody>
+	</table>	
+	<script src="js/index.js"></script>
 </body>
 </html>

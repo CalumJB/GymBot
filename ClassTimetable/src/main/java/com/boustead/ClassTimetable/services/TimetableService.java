@@ -70,7 +70,7 @@ public class TimetableService {
             else if(!classname.equals("header")){ //class
 
                 //Create class item from tr elements and date
-                ClassItem classItem = getClassFromTableRow(dateString,tr);
+                ClassItem classItem = getClassFromTableRow(locId, dateString,tr);
 
                 //Skip to next row if class item not created
                 if (classItem==null){ continue; }
@@ -93,7 +93,7 @@ public class TimetableService {
     }
 
     //Attemps to convert table row (tr) into a class object
-    private ClassItem getClassFromTableRow(String dateString, WebElement tr){
+    private ClassItem getClassFromTableRow(int locationId, String dateString, WebElement tr){
 
         //Get the web elements for a row
         String timeStr=null;
@@ -119,30 +119,35 @@ public class TimetableService {
 
         //Now that all elements are valid and set
 
-        //Convert date and time string to a Date object
-        Date dateTime = stringDateTimeToDate(dateString, timeStr);
-        if(dateTime==null){ return null; }
+        //Convert date to date string
+        String date = stringDateToDate(dateString);
+        if(date==null){ return null; }
+
 
         //determine whether class of gym booking
         boolean isClass;
 
-        if(nameStr.equals("Gym Time") || nameStr.equals("Gym Entry Time") || nameStr.equals("Last Entry Time")){ isClass=false; }
+        if(nameStr.contains("Gym Time") || nameStr.contains("Gym Entry Time") || nameStr.contains("Last Entry Time")){ isClass=false; }
         else{ isClass=true; }
 
-        return new ClassItem(isClass, dateTime, nameStr, instructorStr, bookingIdStr);
+        return new ClassItem(isClass, date, timeStr, nameStr, instructorStr, durationStr, bookingIdStr, locationId);
 
     }
 
-    public Date stringDateTimeToDate(String date, String time){
+    //Converts string date to Date and then to another string date formate
+    //Essentially changes the format of date
+    public String stringDateToDate(String date){
         String dateAr[] = date.split(" - ");
         date = dateAr[1];
-        String dateTimeString = time + ", " + date;
-        DateFormat format = new SimpleDateFormat("HH:mm, d MMMM yyyy", Locale.ENGLISH);
+        DateFormat stringToDateFormat = new SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH);
+        DateFormat dateToNewStringFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
         try {
-            Date formattedDate = format.parse(dateTimeString);
-            return formattedDate;
+            Date formattedDate = stringToDateFormat.parse(date);
+            String stringFormattedDate = dateToNewStringFormat.format(formattedDate);
+
+            return stringFormattedDate;
         } catch (ParseException e) {
-            log.error("Unable to convert table date and time to Date object");
+            log.error("Unable to convert table date to Date object");
             log.error(e.getMessage());
             return null;
         }
